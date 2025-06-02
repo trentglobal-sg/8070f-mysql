@@ -70,3 +70,22 @@ SELECT * FROM products ORDER BY buyPrice DESC LIMIT 3;
 -- OR any customers from any country with credit limit >= 1k
 SELECT * FROM customers WHERE (country="USA" and state="NV" and creditLimit > 5000)
          OR (country <> "USA" and creditLimit > 1000);
+
+
+-- for each employee, show their name and the phone number with extension
+-- JOIN allows us to combine two or more tables as in one in a result table
+-- FROM...JOIN ALWAYS HAPPEN FIRST
+SELECT firstName, lastName, phone, extension FROM employees JOIN offices
+  ON employees.officeCode = offices.officeCode;
+
+
+  -- for each employee, show their name and the phone number with extension
+-- JOIN allows us to combine two or more tables as in one in a result table
+-- 1. FROM...JOIN ALWAYS HAPPEN FIRST
+-- 2. WHERE 
+-- 3. SELECT specific columns
+-- 4. ORDER BY 
+SELECT firstName AS `First Name`, lastName, phone, extension FROM employees JOIN offices
+  ON employees.officeCode = offices.officeCode
+  WHERE country = "USA"
+  ORDER BY `First Name`
