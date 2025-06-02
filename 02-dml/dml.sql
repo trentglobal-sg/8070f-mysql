@@ -36,3 +36,8 @@ DELETE FROM parents WHERE parent_id = 2;
 
 -- We can try to update the primary key of a row after it has been used
 --UPDATE parents SET parent_id=5 WHERE parent_id=2;
+
+INSERT INTO students (name, gender, swimming_grade, date_of_birth, parent_id) VALUES
+  ("John Cena", "M", NULL, "2023-01-02", 1);
+
+UPDATE students SET parent_id=2 WHERE student_id=5;
