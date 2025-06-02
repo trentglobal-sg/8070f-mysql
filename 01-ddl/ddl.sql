@@ -28,7 +28,7 @@ create table students (
  student_id int unsigned primary key auto_increment,
  name varchar(100) not null,
  gender varchar(2) not null,
- swimming_grade tinyint unsigned,
+ swimming_grade tinyint unsigned DEFAULT 0,
  date_of_birth datetime
 ) engine = innodb;
 
@@ -59,3 +59,12 @@ insert into students (name, gender, swimming_grade, date_of_birth, parent_id)
 -- ALTER TABLE: DROP COLUMN
  -- to delete a column
  alter table students drop column test;
+
+
+ -- DDL
+ -- CREATE TABLE
+ -- ALTER TABLE
+ -- - add colulmn
+ -- - modify column
+ -- - drop column
+ -- DROP TABLE
