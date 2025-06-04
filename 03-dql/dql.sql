@@ -213,5 +213,14 @@ HAVING COUNT(*) > 3
 ORDER BY `Revenue` DESC
 LIMIT 3;
 
--- Find the best performing product line in the year of 2023
+-- Find the best performing product line in the year of 2003
 -- Consider only sales in USA
+SELECT SUM(quantityOrdered * priceEach) AS "Revenue", productlines.productLine FROM productlines
+ JOIN products ON productlines.productLine = products.productLine
+ JOIN orderdetails ON products.productCode = orderdetails.productCode
+ JOIN orders ON orders.orderNumber = orderdetails.orderNumber
+ JOIN customers ON orders.customerNumber = customers.customerNumber
+ WHERE country="USA" AND YEAR(orderDate)='2003'
+GROUP BY productlines.productLine
+ORDER BY `Revenue` DESC
+LIMIT 3;
