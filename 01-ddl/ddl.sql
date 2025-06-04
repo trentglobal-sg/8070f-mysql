@@ -68,3 +68,11 @@ insert into students (name, gender, swimming_grade, date_of_birth, parent_id)
  -- - modify column
  -- - drop column
  -- DROP TABLE
+
+ CREATE TABLE orders (
+   order_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   amount INT UNSIGNED NOT NULL,
+   orderDate DATETIME NOT NULL
+ ) engine = innodb;
+
+ INSERT INTO orders (amount, orderDate) VALUES (1000, CURDATE());

@@ -89,3 +89,129 @@ SELECT firstName AS `First Name`, lastName, phone, extension FROM employees JOIN
   ON employees.officeCode = offices.officeCode
   WHERE country = "USA"
   ORDER BY `First Name`
+
+-- REVIEW
+SELECT customerName, contactFirstName, contactLastName, 
+  customers.country AS "Customer Country", creditLimit,
+  firstName, lastName, offices.country AS "Office Country"
+  FROM customers JOIN employees
+    ON customers.salesRepEmployeeNumber = employees.employeeNumber
+  JOIN offices
+    ON employees.officeCode = offices.officeCode
+  WHERE creditLimit > 20000
+  ORDER BY creditLimit DESC
+  LIMIT 10;
+
+-- INNER JOIN: The LHS must find a match in the RHS for it to be in the results
+-- If we just say "JOIN" by default it is INNER JOIN
+SELECT *
+  FROM customers JOIN employees
+  ON customers.salesRepEmployeeNumber = employees.employeeNumber;
+   
+-- LEFT JOIN: All rows in the LHS table WILL be in the results
+SELECT *
+  FROM customers LEFT JOIN employees
+  ON customers.salesRepEmployeeNumber = employees.employeeNumber;
+
+-- LEFT JOIN: All rows in the LHS table WILL be in the results
+SELECT *
+  FROM employees LEFT JOIN customers
+  ON customers.salesRepEmployeeNumber = employees.employeeNumber
+  WHERE jobTitle = "Sales Rep";
+   
+-- RIGHT JOIN (it's like LEFT JOIN, but all the rows from RHS table is included)
+-- FULL OUTER JOIN (LEFT JOIN + RIGHT JOIN) --> NOT SUPPORTED BY MySQL
+
+-- Show all the order number, status, order date, name of customer which placed in it
+-- where the order date is in the year 2004
+SELECT orderNumber, status, orderDate, customerName 
+ FROM orders JOIN customers
+   ON orders.customerNumber = customers.customerNumber
+   WHERE orderDate >='2004-01-01' AND orderDate<='2004-12-31';
+
+   -- For each order, how many days does it need for it be shipped
+select orderNumber, shippedDate - orderDate from orders
+where status="shipped"
+
+-- MONTH, YEAR AND DAY functions
+
+
+-- SELECT DISTINCT(<colName>) find all the unique (non-duplicated) values for a column
+-- Example: Find all the unique countries that customers are from
+SELECT DISTINCT(country) FROM customers;
+
+-- An aggregate function returns from a single value from a table
+SELECT AVG(creditLimit) FROM customers WHERE creditLimit > 0;
+
+-- Count how many customers there are:
+SELECT COUNT(*) FROM customers;
+
+SELECT COUNT(DISTINCT(country)) FROM customers;
+
+-- An aggregate function returns from a single value from a table
+SELECT MIN(creditLimit) FROM customers WHERE creditLimit > 0;
+
+SELECT MAX(creditLimit) FROM customers;
+
+SELECT SUM(creditLimit) FROM customers;
+
+-- GROUP BY
+
+-- For each country, find out how many customers there are
+-- (For a column, for each its distinct value, do some aggregation)
+SELECT country, COUNT(*) FROM customers GROUP BY country;
+
+-- For each office code, count how employees there are
+SELECT officeCode, COUNT(*) FROM employees
+GROUP BY officeCode;
+
+
+-- How many orders per year was cancelled
+SELECT COUNT(*), YEAR(orderDate) FROM orders
+WHERE status="cancelled"
+GROUP BY YEAR(orderDate)
+
+-- Find all countries which have at least 10 customers
+-- Using HAVING -- which is to count groups
+SELECT COUNT(*), country FROM customers
+GROUP BY country
+HAVING COUNT(*) > 10;
+
+-- For each employee, find out how much reveue they earned
+-- Find the top ten salesperson by their sales performance
+SELECT SUM(amount), employeeNumber, firstName, lastName FROM employees
+  JOIN customers
+    ON employees.employeeNumber = customers.salesRepEmployeeNumber
+  JOIN payments
+    ON customers.customerNumber = payments.customerNumber
+GROUP BY employeeNumber, firstName, lastName;
+
+
+-- Find the top ten salesperson by their sales performance
+SELECT SUM(amount) AS "Revenue", employeeNumber, firstName, lastName FROM employees
+  JOIN customers
+    ON employees.employeeNumber = customers.salesRepEmployeeNumber
+  JOIN payments
+    ON customers.customerNumber = payments.customerNumber
+GROUP BY employeeNumber, firstName, lastName
+ORDER BY `Revenue` DESC
+LIMIT 10;
+
+
+-- Find the top three salesperson in the US  by their sales performance (only for employees in the US)
+-- and they  have close at least three sales
+SELECT SUM(amount) AS "Revenue", employeeNumber, firstName, lastName FROM employees
+  JOIN customers
+    ON employees.employeeNumber = customers.salesRepEmployeeNumber
+  JOIN payments
+    ON customers.customerNumber = payments.customerNumber
+  JOIN offices
+    ON employees.officeCode = offices.officeCode
+WHERE offices.country = "USA"
+GROUP BY employeeNumber, firstName, lastName
+HAVING COUNT(*) > 3
+ORDER BY `Revenue` DESC
+LIMIT 3;
+
+-- Find the best performing product line in the year of 2023
+-- Consider only sales in USA
